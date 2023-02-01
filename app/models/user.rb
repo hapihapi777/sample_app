@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
+
   # 渡された文字列のハッシュ値を返す
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
@@ -28,6 +29,7 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, User.digest(remember_token))
     remember_digest
   end
+
 
   # セッションハイジャック防止のためにセッショントークンを返す
   # この記憶ダイジェストを再利用しているのは単に利便性のため
@@ -50,13 +52,13 @@ class User < ApplicationRecord
   private
 
     # メールアドレスをすべて小文字にする
-    def downcase_email
-      self.email = email.downcase
-    end
+  def downcase_email
+    self.email = email.downcase
+  end
 
-    # 有効化トークンとダイジェストを作成および代入する
-    def create_activation_digest
-      self.activation_token  = User.new_token
-      self.activation_digest = User.digest(activation_token)
-    end
+  # 有効化トークンとダイジェストを作成および代入する
+  def create_activation_digest
+    self.activation_token  = User.new_token
+    self.activation_digest = User.digest(activation_token)
+  end
 end
