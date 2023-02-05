@@ -13,4 +13,15 @@ class UserMailerTest < ActionMailer::TestCase
     assert_match user.activation_token,   mail.body.encoded
     assert_match CGI.escape(user.email),  mail.body.encoded
   end
+
+  test "password_reset" do
+    user = users(:michael)
+    user.reset_token = User.new_token
+    mail = UserMailer.password_reset(user)
+    assert_equal "Password reset", mail.subject
+    assert_equal [user.email], mail.to
+    assert_equal ["rock666gemini69@gmail.com"], mail.from # リスト12.12で["user@realdomain.com"]を["rock666gemini69@gmail.com"]に書き換えた。
+    assert_match user.reset_token,        mail.body.encoded
+    assert_match CGI.escape(user.email),  mail.body.encoded
+  end
 end
