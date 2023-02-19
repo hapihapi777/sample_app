@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_many :microposts, dependent: :destroy # リスト13.20で、下のhas_manyを書き換え(両方採用はしない方が良いと判断して、下はコメントにした)
+  # has_many :microposts # リスト13.12で追加
   attr_accessor :remember_token, :activation_token, :reset_token
   # attr_accessor :remember_token, :activation_token #12.6でコメント化
   before_save   :downcase_email
