@@ -4,11 +4,12 @@ class MicropostsController < ApplicationController
 
   def create
     @micropost = current_user.microposts.build(micropost_params)
+    @micropost.image.attach(params[:micropost][:image])
     if @micropost.save
       flash[:success] = "Micropost created!"
       redirect_to root_url
     else
-      @feed_items = current_user.feed.paginate(page: params[:page]) # 13.51で追加
+      @feed_items = current_user.feed.paginate(page: params[:page])
       render 'static_pages/home', status: :unprocessable_entity
     end
   end
@@ -16,7 +17,7 @@ class MicropostsController < ApplicationController
   def destroy
     @micropost.destroy
     flash[:success] = "Micropost deleted"
-    if request.referrer.nil?
+    if request.referrer.nil? || request.referrer == microposts_url
       redirect_to root_url, status: :see_other
     else
       redirect_to request.referrer, status: :see_other
@@ -26,7 +27,7 @@ class MicropostsController < ApplicationController
   private
 
     def micropost_params
-      params.require(:micropost).permit(:content)
+      params.require(:micropost).permit(:content, :image)
     end
 
     def correct_user
